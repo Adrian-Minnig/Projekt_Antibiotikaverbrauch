@@ -18,3 +18,13 @@ library(readr)
 library(ggplot2)
 
 
+
+
+# Set system language & options ####
+Sys.setenv(LANG = "en")
+rm(list=ls())                  # clear current workspace
+options(scipen=999)            # avoid the use of scientific notation
+
+
+file.edit("R/AMR_descriptive_statistics.R")
+file.edit("R/AMR_analysis.R")
