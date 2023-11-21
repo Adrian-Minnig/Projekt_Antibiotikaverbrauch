@@ -1,7 +1,7 @@
 # This script is used for some first descriptive statistics with the datasets
 
 
-# Importing sample level dataset
+# Importing sample level dataset with antibiotics tested as factors
 samples <- read_delim("data/processed/AMR/csv_files_for_analysis/sample_level_data_for_analysis.csv", 
 delim = ";", escape_double = FALSE, col_types = cols(Nr = col_double(), 
 date_farm = col_date(format = "%d.%m.%Y"), 
