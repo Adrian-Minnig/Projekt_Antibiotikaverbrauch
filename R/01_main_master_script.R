@@ -4,7 +4,8 @@
 
 setwd("~/GitHub/Projekt_Antibiotikaverbrauch")
 install.packages(c("dplyr", "tidyverse", "lubridate", "usethis", "gitcreds", 
-                   "here", "medicaldata", "cowplot", "readr", "ggplot2" ))
+                   "here", "medicaldata", "cowplot", "readr", "ggplot2", "remotes",
+                   "rstatix", "gtsummary", "reshape2", "janitor"))
 
 library(dplyr)
 library(tidyverse)
@@ -16,8 +17,11 @@ library(medicaldata)
 library(cowplot)
 library(readr)
 library(ggplot2)
-
-
+library(remotes)
+library(rstatix)
+library(gtsummary)
+library(reshape2)
+library(janitor)
 
 
 # Set system language & options ####
