@@ -1,7 +1,7 @@
 # This script is used for some first descriptive statistics with the datasets
 
 
-# Importing sample level dataset with antibiotics tested as factors
+# Importing sample level dataset with antibiotics coded as factors
 samples <- read_delim("data/processed/AMR/csv_files_for_analysis/sample_level_data_for_analysis.csv", 
 delim = ";", escape_double = FALSE, col_types = cols(Nr = col_double(), 
 date_farm = col_date(format = "%d.%m.%Y"), 
@@ -19,6 +19,8 @@ drug_res = col_double(),
 multiclass_res = col_factor(levels = c("0", "1")), class_res = col_double()), 
 trim_ws = TRUE)
 
+#Importing sample level dataset with antibiotics coded as numerics
+# this makes it easier to plot the data with ggplot
 samples <- read_delim("data/processed/AMR/csv_files_for_analysis/sample_level_data_for_analysis.csv", 
                       delim = ";", escape_double = FALSE, col_types = cols(Nr = col_double(), 
                                                                            date_farm = col_date(format = "%d.%m.%Y"))
@@ -48,40 +50,108 @@ summary(samples_cow)
 tbl_summary(samples, by = age)
 
 
-      
+# Plot with all antibiotics ordered by decreasing number of resistant isolates      
 samples %>% 
   group_by(age) %>% 
-  summarise(AMP = sum(AMP),
-            AZI = sum(AZI),
-            AMI = sum(AMI),
+  summarise(TET = sum(TET),
+            AMP = sum(AMP),
+            SMX = sum(SMX),
+            TMP = sum(TMP),
+            CHL = sum(CHL),
             GEN = sum(GEN),
+            CIP = sum(CIP),
+            NAL = sum(NAL),
+            AZI = sum(AZI),
+            FOT = sum(FOT),
+            AMI = sum(AMI),
             TGC = sum(TGC),
             TAZ = sum(TAZ),
-            FOT = sum(FOT),
             COL = sum(COL),
-            NAL = sum(NAL),
-            TET = sum(TET),
-            TMP = sum(TMP),
-            SMX = sum(SMX),
-            CHL = sum(CHL),
-            MERO = sum(MERO),
-            CIP = sum(CIP)) %>%
-  janitor::adorn_totals(name = "All age groups") %>% 
+            MERO = sum(MERO)) %>%
+  #janitor::adorn_totals(name = "All age groups") %>% 
   slice(3:n(), 1:2) %>% 
   melt() %>%
-  ggplot(aes(x = variable, y = (value / length(samples$Nr)), fill = reorder(age, -value), label = (value / length(samples$Nr) ))) +
+  ggplot(aes(x = variable, y = (value / length(samples$Nr)), 
+  fill = reorder(age, -value), label = (value / length(samples$Nr)*100))) +
   geom_bar(position="dodge", stat="identity") +
-  #geom_text(aes(), position = position_dodge(0.8), vjust = -0.3)+
-  scale_fill_manual(values = c(hcl.colors(3, "Dynamic"))) +
-
+  geom_text(aes(), position = position_dodge(0.8), vjust = -0.3,check_overlap = TRUE)+
+  scale_fill_manual(values = c(hcl.colors(4, "Cividis")), labels = c('Calf Samples', 'Cow Samples')) +
   theme_bw() +
-  theme(legend.title=element_blank()) +
+  theme(plot.title = element_text(size = 30, hjust = 0.5, vjust = 0.5 ),legend.title=element_blank(),
+  axis.text=element_text(color="black"))+
   xlab("") +
-  ylab("Resistance rate") + 
-  scale_y_continuous(labels = scales::percent)
+  ylab("Resistance Rate") + 
+  scale_y_continuous(labels = scales::percent) +
+  ggtitle("Resistance Rate of Antibiotics tested")
+
+
+# Plot with resistance rate by antibiotic class
+samples %>% 
+  group_by(age) %>% 
+  summarise(TET = sum(TET),
+            AMP = sum(AMP),
+            SMX = sum(SMX),
+            TMP = sum(TMP),
+            CHL = sum(CHL),
+            GEN = sum(GEN),
+            CIP = sum(CIP),
+            NAL = sum(NAL),
+            AZI = sum(AZI),
+            FOT = sum(FOT),
+            AMI = sum(AMI),
+            TGC = sum(TGC),
+            TAZ = sum(TAZ),
+            COL = sum(COL),
+            MERO = sum(MERO)) %>%
+  #janitor::adorn_totals(name = "All age groups") %>% 
+  slice(3:n(), 1:2) %>% 
+  melt() %>%
+  ggplot(aes(x = variable, y = (value / length(samples$Nr)), 
+             fill = reorder(age, -value), label = (value / length(samples$Nr)*100))) +
+  geom_bar(position="dodge", stat="identity") +
+  geom_text(aes(), position = position_dodge(0.8), vjust = -0.3,check_overlap = TRUE)+
+  scale_fill_manual(values = c(hcl.colors(4, "Cividis")), labels = c('Calf Samples', 'Cow Samples')) +
+  theme_bw() +
+  theme(plot.title = element_text(size = 30, hjust = 0.5, vjust = 0.5 ),legend.title=element_blank()) +
+  xlab("") +
+  ylab("Resistance Rate") + 
+  scale_y_continuous(labels = scales::percent) +
+  ggtitle("Resistance Rate of Antibiotics tested")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 samples %>% 
-  group_by(age, AMU) %>% 
-  summarise(sum(multidrug_res), 
-            sum(multiclass_res),
-            sum(drug_res))
+  group_by(age) %>% 
+  summarise(TET = sum(TET),
+            AMP = sum(AMP),
+            SMX = sum(SMX),
+            TMP = sum(TMP),
+            CHL = sum(CHL),
+            GEN = sum(GEN),
+            CIP = sum(CIP),
+            NAL = sum(NAL),
+            AZI = sum(AZI),
+            FOT = sum(FOT),
+            AMI = sum(AMI),
+            TGC = sum(TGC),
+            TAZ = sum(TAZ),
+            COL = sum(COL),
+            MERO = sum(MERO),
+            multiclass_res = sum(multiclass_res))
