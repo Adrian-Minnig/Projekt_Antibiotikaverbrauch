@@ -86,13 +86,13 @@ plot1 <-
                               variable == "FOT" ,(value / length(samples$Nr)*100),""))) +
   geom_bar(position="dodge", stat="identity", width = 0.8) +
   geom_text(aes(), position = position_dodge(0.8), vjust = -0.3,check_overlap = TRUE)+
-  scale_fill_manual(values = c(hcl.colors(5, "Cividis")), labels = c('Calf Samples', 'Cow Samples')) +
+  scale_fill_manual(values = c(hcl.colors(5, "Cividis")), labels = c('Calf Samples (n=50)', 'Cow Samples (n=150)')) +
   theme_bw() +
   theme(plot.title = element_text(size = 30, hjust = 0.5, vjust = 0.5 ),
         legend.title = element_blank(), axis.title.y = element_text(size = 20,margin =margin(r=20)),
         axis.text = element_text(color = "black"),
         panel.grid.major = element_line(linewidth = 0.5, color = "lightgrey", linetype = "dashed"),
-        axis.ticks.x = element_line(linewidth = 20)) +
+        axis.ticks.x = element_line(linewidth = 22)) +
   xlab("") +
   ylab("Resistance Rate") + 
   scale_y_continuous(labels = scales::percent, expand = c(0.01,0), 
@@ -136,14 +136,14 @@ samples %>%
                             ((value / length(samples$Nr)*100)),""))) +
   geom_bar(position="dodge", stat="identity", width = 0.8) +
   geom_text(aes(), position = position_dodge(0.8), vjust = -0.3,check_overlap = TRUE)+
-  scale_fill_manual(values = c(hcl.colors(5, "Cividis")), labels = c('Calf Samples', 'Cow Samples')) +
+  scale_fill_manual(values = c(hcl.colors(5, "Cividis")), labels = c('Calf Samples (n=50)', 'Cow Samples (n=150)')) +
   theme_bw() +
   theme(plot.title = element_text(size = 30, hjust = 0.5, vjust = 0.5 ),
         legend.title = element_blank(), axis.title.y = element_text(size = 20,margin =margin(r=20)),
         axis.text = element_text(color = "black"),
         axis.text.x = element_text(angle = 45, hjust = 1, family = "sans", size = 10),
         panel.grid.major = element_line(linewidth = 0.5, color = "lightgrey", linetype = "dashed"),
-        axis.ticks.x = element_line(linewidth = 24)) +
+        axis.ticks.x = element_line(linewidth = 28)) +
   xlab("") +
   ylab("Resistance Rate") + 
   scale_y_continuous(labels = scales::percent, expand = c(0.01,0), 
@@ -156,6 +156,7 @@ print(plot2)
 
 
 #plot3: Plot with number of antibiotic classes where resistances occured
+plot3 <-
 samples %>%
   group_by(age) %>%
   summarise('Pan-susceptible' = sum(class_res == 0),
@@ -165,10 +166,11 @@ samples %>%
   melt() %>%
   ggplot(aes(x = variable, y = (value / length(samples$Nr)), 
              fill = reorder(age, -value), 
-             label = paste("n=", value))) +
+             label = paste("n=", value))) + 
+             #label = paste(((value / 200)*100),"%"))) +
   geom_bar(position="dodge", stat="identity", width = 0.8) +
   geom_text(aes(), position = position_dodge(0.8), vjust = -0.3,check_overlap = TRUE)+
-  scale_fill_manual(values = c(hcl.colors(5, "Cividis")), labels = c('Calf Samples', 'Cow Samples')) +
+  scale_fill_manual(values = c(hcl.colors(5, "Cividis")), labels = c('Calf Samples (n=50)', 'Cow Samples (n=150)')) +
   theme_bw() +
   theme(plot.title = element_text(size = 30, hjust = 0.5, vjust = 0.5 ),
         legend.title = element_blank(), axis.title.y = element_text(size = 20,margin =margin(r=20)),
@@ -184,9 +186,11 @@ samples %>%
   scale_x_discrete(expand = c(0.21,0)) +
   ggtitle("Occurence of (Multi)Class Resistances")
 
+print(plot3)
 
 
 #plot4: Plot with number of class resistances in calfs by AMU
+plot4 <-
 samples_calf %>%
   group_by(AMU) %>%
   summarise('Pan-susceptible' = sum(class_res == 0),
@@ -195,10 +199,10 @@ samples_calf %>%
   melt() %>%
 ggplot(aes(x = variable, y = (value / 50),
             fill = reorder(AMU, -value),
-            label = ((value / 50)*100))) +
+            label = paste(((value / 50)*100),"%"))) +
   geom_bar(position="dodge", stat="identity", width = 0.8)+
   geom_text(aes(), position = position_dodge(0.8), vjust = -0.3, check_overlap = TRUE)+
-  scale_fill_manual(values =c(hcl.colors(5, "Cividis")), labels = c('low AMU farm', 'high AMU farm'))+
+  scale_fill_manual(values =c(hcl.colors(5, "Cividis")), labels = c('low AMU farm (n=28)', 'high AMU farm (n=22)'))+
   theme_bw() +
   theme(plot.title = element_text(size = 30, hjust = 0.5, vjust = 0.5 ),
       legend.title = element_blank(), axis.title.y = element_text(size = 20,margin =margin(r=20)),
@@ -213,17 +217,41 @@ ggplot(aes(x = variable, y = (value / 50),
                      breaks = c(0.1,0.2,0.3,0.35)) +
   scale_x_discrete(expand = c(0,0.43)) +
   ggtitle("(Multi)Class Resistance in Calves in low vs. high AMU Farms")
-  
-  
 
-#plot4: Plot with number of class resistances in cows by AMU
-
+print(plot4)
   
-  
+#plot5: Plot with number of class resistances in cows by AMU
+plot5 <-
+samples_cow %>%
+  group_by(AMU) %>%
+  summarise('Pan-susceptible' = sum(class_res == 0),
+            'Resistance against 1-2 Classes ' = sum(class_res == 1 | class_res == 2),
+            'Multiclass Resistance (≥ 3 Classes)' = sum(class_res >= 3)) %>%
+  melt() %>%
+ggplot(aes(x = variable, y = (value / 150),
+           fill = reorder(AMU, -value),
+           label = scales::percent((value / 150), accuracy=0.1))) +
+  geom_bar(position="dodge", stat="identity", width = 0.8)+
+  geom_text(aes(), position = position_dodge(0.8), vjust = -0.3, check_overlap = TRUE)+
+  scale_fill_manual(values =c(hcl.colors(5, "Cividis")), labels = c('low AMU farm (n=28)', 'high AMU farm (n=22)'))+
+  theme_bw() +
+  theme(plot.title = element_text(size = 30, hjust = 0.5, vjust = 0.5 ),
+        legend.title = element_blank(), axis.title.y = element_text(size = 20,margin =margin(r=20)),
+        legend.text = element_text(size = 15),
+        axis.text = element_text(color = "black"),
+        axis.text.x = element_text(#angle = 45, hjust = 1, 
+          family = "sans", size = 15),
+        panel.grid.major = element_line(linewidth = 0.5, color = "lightgrey", linetype = "dashed"))+
+  xlab("")+
+  ylab("% of E.coli isolates") +
+  scale_y_continuous(labels = scales::percent, expand = c(0.01,0), limits =c(0,0.6),
+                                                               breaks = c(0.05,0.1,0.2,0.3,0.4,0.5,0.6))+
+  scale_x_discrete(expand = c(0,0.43)) +
+  ggtitle("(Multi)Class Resistance in Cows in low vs. high AMU Farms")
 
-
-  
+print(plot5)
          
+
 
 
 
