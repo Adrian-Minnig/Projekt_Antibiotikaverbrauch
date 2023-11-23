@@ -47,7 +47,6 @@ summary(samples_calf)
 summary(samples_cow)
 
 
-tbl_summary(samples, by = age)
 
 
 # plot1: Plot with all antibiotics ordered by decreasing number of resistant isolates      
@@ -251,22 +250,7 @@ ggplot(aes(x = variable, y = (value / 150),
 
 print(plot5)
          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+ 
 
 samples %>% 
   group_by(age) %>% 
@@ -286,3 +270,170 @@ samples %>%
             COL = sum(COL),
             MERO = sum(MERO),
             multiclass_res = sum(multiclass_res))
+
+
+#adding additional variable positive (1 = sample has at least one resistance,
+#otherwise, 0)
+samples$positive <- ifelse(samples$drug_res > 0,1,0)
+ 
+#preparing two summary tables to merge
+table_positive <-
+tbl_summary((samples %>%
+            select(age, positive) %>%
+            mutate(age = case_when(age == "calf" ~ "Calf",
+                                     age == "cow" ~  "Cow"))),
+            by = positive,
+            label = list(age ~ "Age group"),
+            percent = "row") %>%
+            add_overall(statistic = ~ "{n}") %>%
+            modify_header(label = "",
+                          stat_0 = '**Overall**  \n N=200',
+                          stat_1 = '**Susceptible**  \n N=174',
+                          stat_2 = '**Resistant**  \n N=26') %>%
+            modify_footnote(stat_2 ~ "Resistant = Sample with at least one resistant isolate",
+                            stat_0 ~ NA)
+           
+            
+table_multiclass_res <-
+tbl_summary((samples %>%
+               select(age, multiclass_res) %>%
+               mutate(age = case_when(age == "calf" ~ "Calf",
+                                      age == "cow" ~  "Cow"))),
+            by = multiclass_res,
+            label = list(age ~ "Age group"),
+            percent = "row", 
+            statistic = multiclass_res  ~ "{n}/{N} ({p}%)") %>%
+                    modify_header(label = "",
+                    stat_1 = '**Resistances against fewer than 3 Classes**,  \n N=183',
+                    stat_2 = '**Multiclass Resistance**  \n N=17 (of 200)') %>%
+            modify_footnote(stat_2 ~ "Multiclass Resistance = resistant against ≥ classes") %>%
+           modify_column_hide(stat_1)
+            
+#table_1: Summary table of fecal samples
+table_1 <-
+tbl_merge(tbls =list(table_positive, table_multiclass_res), 
+          tab_spanner = c('', '')) %>%
+          modify_caption('**Summary-Table of Fecal Samples**') %>%
+          
+          
+print(table_1)
+  
+
+
+#Importing sample level dataset with antibiotics coded as numerics
+# this makes it easier to plot the data with ggplot
+farms <- read_delim("data/processed/AMR/csv_files_for_analysis/farm_level_data_for_analysis.csv", 
+                      delim = ";", escape_double = FALSE, col_types = cols(Nr = col_double(), 
+                                                                           date_farm = col_date(format = "%d.%m.%Y"))
+                      ,trim_ws = TRUE)
+
+View(farms)
+
+#plot6: Plot with farms with resistances
+
+plot <-
+farms %>% 
+  group_by(AMU) %>% 
+  summarise(TET = sum(TET > 0, na.rm=TRUE),
+            AMP = sum(AMP > 0, na.rm=TRUE),
+            SMX = sum(SMX > 0, na.rm=TRUE),
+            TMP = sum(TMP > 0, na.rm=TRUE),
+            CHL = sum(CHL > 0, na.rm=TRUE),
+            GEN = sum(GEN > 0, na.rm=TRUE),
+            CIP = sum(CIP > 0, na.rm=TRUE),
+            NAL = sum(NAL > 0, na.rm=TRUE),
+            AZI = sum(AZI > 0, na.rm=TRUE),
+            FOT = sum(FOT > 0, na.rm=TRUE),
+            AMI = sum(AMI > 0, na.rm=TRUE),
+            TGC = sum(TGC > 0, na.rm=TRUE),
+            TAZ = sum(TAZ > 0, na.rm=TRUE),
+            COL = sum(COL > 0, na.rm=TRUE),
+            MERO = sum(MERO > 0, na.rm=TRUE)) %>%
+  #janitor::adorn_totals(name = "All age groups") %>% 
+  melt() %>%
+  ggplot(aes(x = variable, y = (value / length(farms$farm)), 
+             fill = reorder(AMU, -value), 
+             label = ifelse(variable == "TET" | 
+                              variable == "AMP" |
+                              variable == "SMX" |
+                              variable == "TMP" |
+                              variable == "CHL" |
+                              variable == "GEN" |
+                              variable == "CIP" |
+                              variable == "NAL" #|
+                              #variable == "AZI" |
+                              #variable == "FOT" 
+                            ,(value / length(farms$farm)*100),""))) +
+  geom_bar(position="stack", stat="identity", width = 0.8) +
+  geom_text(aes(), position = position_stack( vjust = 0.5),check_overlap = TRUE, color = "white")+
+  scale_fill_manual(values = c(hcl.colors(5, "Cividis")), labels = c('low AMU farms (n=28)', 'high AMU farms (n=22)')) +
+  theme_bw() +
+  theme(plot.title = element_text(size = 30, hjust = 0.5, vjust = 0.5 ),
+        legend.title = element_blank(), axis.title.y = element_text(size = 20,margin =margin(r=20)),
+        axis.text = element_text(color = "black"),
+        panel.grid.major = element_line(linewidth = 0.5, color = "lightgrey", linetype = "dashed"),
+        axis.ticks.x = element_line(linewidth = 22)) +
+  xlab("") +
+  ylab("Resistance Rate") + 
+  scale_y_continuous(labels = scales::percent, expand = c(0.01,0.003), 
+                     limits = c(0,0.42), breaks =c(0.1,0.2,0.3,0.4)) +
+  scale_x_discrete(expand = c(0,0.5)) +
+  ggtitle("% of low vs. high AMU farms with at least one resistance (antibiotics)")
+
+print(plot6)
+
+
+
+#plot7: not working so far...
+farms %>% 
+  group_by(AMU) %>% 
+  summarise(Tetracyclines = sum(TET > 0, na.rm=TRUE),
+            Penicillins = sum(AMP > 0, na.rm=TRUE),
+            Sulfonamides = sum(SMX > 0, na.rm=TRUE),
+            Aminopyrimidines = sum(TMP > 0, na.rm=TRUE),
+            Phenicoles = sum(CHL > 0, na.rm=TRUE),
+            Aminoglycosides = sum(sum(GEN > 0, na.rm=TRUE),sum(AMI > 0, na.rm=TRUE)),
+            Quinolones = sum(sum(CIP > 0, na.rm=TRUE), sum(NAL> 0, na.rm=TRUE)),
+            Macrolides = sum(AZI> 0, na.rm=TRUE),
+            Cephalosporins = sum(sum(FOT > 0, na.rm=TRUE),sum(TAZ> 0, na.rm=TRUE)),
+            Glycylcyclines = sum(TGC> 0, na.rm=TRUE),
+            Polypeptides = sum(COL> 0, na.rm=TRUE),
+            Carbapenemns = sum(MERO> 0, na.rm=TRUE)) %>%
+  melt() %>%
+  ggplot(aes(x = variable, y = (value / length(farms$farm)), 
+             fill = reorder(AMU, -value), 
+             label = ifelse(variable == "Penicillins" | 
+                              variable == "Tetracyclines" |
+                              variable == "Sulfonamides" |
+                              variable == "Aminopyrimidines" |
+                              variable == "Phenicoles" |
+                              variable == "Aminoglycosides" |
+                              variable == "Quinolones", #|
+                              #variable == "Macrolides" |
+                              #variable == "Cephalosporins",
+                            ((value / length(farms$farm)*100)),""))) +
+  geom_bar(position="stack", stat="identity", width = 0.8) +
+  geom_text(aes(), position = position_stack( vjust = 0.5),check_overlap = TRUE, color = "white")+
+  scale_fill_manual(values = c(hcl.colors(5, "Cividis")), labels = c('low AMU farms (n=28)', 'high AMU farms (n=22)')) +
+  theme_bw() +
+  theme(plot.title = element_text(size = 30, hjust = 0.5, vjust = 0.5 ),
+        legend.title = element_blank(), axis.title.y = element_text(size = 20,margin =margin(r=20)),
+        axis.text = element_text(color = "black"),
+        axis.text.x = element_text(angle = 45, hjust = 1, family = "sans", size = 10),
+        panel.grid.major = element_line(linewidth = 0.5, color = "lightgrey", linetype = "dashed"),
+        axis.ticks.x = element_line(linewidth = 22)) +
+  xlab("") +
+  ylab("Resistance Rate") + 
+  scale_y_continuous(labels = scales::percent, expand = c(0.01,0.003), 
+                     limits = c(0,0.42), breaks =c(0.1,0.2,0.3,0.4)) +
+  scale_x_discrete(expand = c(0,0.5)) +
+  ggtitle("% of low vs. high AMU farms with at least one resistance (classes)")
+
+
+
+
+
+
+
+
+
