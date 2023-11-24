@@ -2,22 +2,22 @@
 
 
 # Importing sample level dataset with antibiotics coded as factors
-samples <- read_delim("data/processed/AMR/csv_files_for_analysis/sample_level_data_for_analysis.csv", 
-delim = ";", escape_double = FALSE, col_types = cols(Nr = col_double(), 
-date_farm = col_date(format = "%d.%m.%Y"), 
-AMU = col_factor(levels = c("low", "high")), 
-age = col_factor(levels = c("calf", "cow")), date_lab = col_date(format = "%d.%m.%Y"), 
-AMP = col_factor(levels = c("0", "1")), AZI = col_factor(levels = c("0", "1")), 
-AMI = col_factor(levels = c("0", "1")), GEN = col_factor(levels = c("0", "1")), 
-TGC = col_factor(levels = c("0", "1")), TAZ = col_factor(levels = c("0", "1")), 
-FOT = col_factor(levels = c("0", "1")), COL = col_factor(levels = c("0", "1")), 
-NAL = col_factor(levels = c("0", "1")), TET = col_factor(levels = c("0", "1")), 
-TMP = col_factor(levels = c("0", "1")), SMX = col_factor(levels = c("0", "1")), 
-CHL = col_factor(levels = c("0", "1")), MERO = col_factor(levels = c("0","1")), 
-CIP = col_factor(levels = c("0", "1")), multidrug_res = col_factor(levels = c("0", "1")), 
-drug_res = col_double(), 
-multiclass_res = col_factor(levels = c("0", "1")), class_res = col_double()), 
-trim_ws = TRUE)
+#samples <- read_delim("data/processed/AMR/csv_files_for_analysis/sample_level_data_for_analysis.csv", 
+#delim = ";", escape_double = FALSE, col_types = cols(Nr = col_double(), 
+#date_farm = col_date(format = "%d.%m.%Y"), 
+#AMU = col_factor(levels = c("low", "high")), 
+#age = col_factor(levels = c("calf", "cow")), date_lab = col_date(format = "%d.%m.%Y"), 
+#AMP = col_factor(levels = c("0", "1")), AZI = col_factor(levels = c("0", "1")), 
+#AMI = col_factor(levels = c("0", "1")), GEN = col_factor(levels = c("0", "1")), 
+#TGC = col_factor(levels = c("0", "1")), TAZ = col_factor(levels = c("0", "1")), 
+#FOT = col_factor(levels = c("0", "1")), COL = col_factor(levels = c("0", "1")), 
+#NAL = col_factor(levels = c("0", "1")), TET = col_factor(levels = c("0", "1")), 
+#TMP = col_factor(levels = c("0", "1")), SMX = col_factor(levels = c("0", "1")), 
+#CHL = col_factor(levels = c("0", "1")), MERO = col_factor(levels = c("0","1")), 
+#CIP = col_factor(levels = c("0", "1")), multidrug_res = col_factor(levels = c("0", "1")), 
+#drug_res = col_double(), 
+#multiclass_res = col_factor(levels = c("0", "1")), class_res = col_double()), 
+#trim_ws = TRUE)
 
 #Importing sample level dataset with antibiotics coded as numerics
 # this makes it easier to plot the data with ggplot
@@ -252,24 +252,6 @@ print(plot5)
          
  
 
-samples %>% 
-  group_by(age) %>% 
-  summarise(TET = sum(TET),
-            AMP = sum(AMP),
-            SMX = sum(SMX),
-            TMP = sum(TMP),
-            CHL = sum(CHL),
-            GEN = sum(GEN),
-            CIP = sum(CIP),
-            NAL = sum(NAL),
-            AZI = sum(AZI),
-            FOT = sum(FOT),
-            AMI = sum(AMI),
-            TGC = sum(TGC),
-            TAZ = sum(TAZ),
-            COL = sum(COL),
-            MERO = sum(MERO),
-            multiclass_res = sum(multiclass_res))
 
 
 #adding additional variable positive (1 = sample has at least one resistance,
@@ -288,10 +270,11 @@ tbl_summary((samples %>%
             add_overall(statistic = ~ "{n}") %>%
             modify_header(label = "",
                           stat_0 = '**Overall**  \n N=200',
-                          stat_1 = '**Susceptible**  \n N=174',
+                          stat_1 = '**Pansusceptible**  \n N=174',
                           stat_2 = '**Resistant**  \n N=26') %>%
             modify_footnote(stat_2 ~ "Resistant = Sample with at least one resistant isolate",
                             stat_0 ~ NA)
+            
            
             
 table_multiclass_res <-
@@ -305,15 +288,18 @@ tbl_summary((samples %>%
             statistic = multiclass_res  ~ "{n}/{N} ({p}%)") %>%
                     modify_header(label = "",
                     stat_1 = '**Resistances against fewer than 3 Classes**,  \n N=183',
-                    stat_2 = '**Multiclass Resistance**  \n N=17 (of 200)') %>%
-            modify_footnote(stat_2 ~ "Multiclass Resistance = resistant against ≥ classes") %>%
-           modify_column_hide(stat_1)
+                    stat_2 = '**Multiclass Resistance<sup>3</sup>**  \n N=17 (of 200)') %>%
+            modify_footnote(stat_2 ~ "Multiclass Resistance = resistant against ≥3 classes") %>%
+            modify_column_hide(stat_1)
+            
             
 #table_1: Summary table of fecal samples
 table_1 <-
 tbl_merge(tbls =list(table_positive, table_multiclass_res), 
-          tab_spanner = c('', '')) %>%
-          modify_caption('**Summary-Table of Fecal Samples**') %>%
+          tab_spanner = c('**Number of pansusceptible  \n vs. positive samples**',
+                          "**Number of multiclass resistant  \n samples (of all 200)**")) #%>%
+          
+          #modify_caption('**Summary-Table of Fecal Samples**') 
           
           
 print(table_1)
