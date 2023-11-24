@@ -315,9 +315,9 @@ farms <- read_delim("data/processed/AMR/csv_files_for_analysis/farm_level_data_f
 
 View(farms)
 
-#plot6: Plot with farms with resistances
+#plot6: Plot with farms by antibiotic resistances
 
-plot <-
+plot6 <-
 farms %>% 
   group_by(AMU) %>% 
   summarise(TET = sum(TET > 0, na.rm=TRUE),
@@ -358,7 +358,7 @@ farms %>%
         legend.title = element_blank(), axis.title.y = element_text(size = 20,margin =margin(r=20)),
         axis.text = element_text(color = "black"),
         panel.grid.major = element_line(linewidth = 0.5, color = "lightgrey", linetype = "dashed"),
-        axis.ticks.x = element_line(linewidth = 22)) +
+        axis.ticks.x = element_line(linewidth = 25)) +
   xlab("") +
   ylab("Resistance Rate") + 
   scale_y_continuous(labels = scales::percent, expand = c(0.01,0.003), 
@@ -370,7 +370,8 @@ print(plot6)
 
 
 
-#plot7: not working so far...
+#plot7: Plot with farms by antibiotic class resistance
+plot7 <-
 farms %>% 
   group_by(AMU) %>% 
   summarise(Tetracyclines = sum(TET > 0, na.rm=TRUE),
@@ -407,7 +408,7 @@ farms %>%
         axis.text = element_text(color = "black"),
         axis.text.x = element_text(angle = 45, hjust = 1, family = "sans", size = 10),
         panel.grid.major = element_line(linewidth = 0.5, color = "lightgrey", linetype = "dashed"),
-        axis.ticks.x = element_line(linewidth = 22)) +
+        axis.ticks.x = element_line(linewidth = 25)) +
   xlab("") +
   ylab("Resistance Rate") + 
   scale_y_continuous(labels = scales::percent, expand = c(0.01,0.003), 
@@ -415,7 +416,7 @@ farms %>%
   scale_x_discrete(expand = c(0,0.5)) +
   ggtitle("% of low vs. high AMU farms with at least one resistance (classes)")
 
-
+print(plot7)
 
 
 
