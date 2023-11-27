@@ -105,173 +105,176 @@ summary(samples_cow)
 
 
 # plot1_calf
-ggplot(data = 
-samples %>% 
-  group_by(age) %>%
-  summarise(TET = sum(TET),
-            AMP = sum(AMP),
-            SMX = sum(SMX),
-            TMP = sum(TMP),
-            CHL = sum(CHL),
-            GEN = sum(GEN),
-            CIP = sum(CIP),
-            NAL = sum(NAL),
-            AZI = sum(AZI),
-            FOT = sum(FOT),
-            AMI = sum(AMI),
-            TGC = sum(TGC),
-            TAZ = sum(TAZ),
-            COL = sum(COL),
-            MERO = sum(MERO)) %>%
-  #janitor::adorn_totals(name = "All age groups") %>% 
-  #slice(3:n(), 1:2) %>% 
-  melt(variable.name = "antibiotic", value.name = "frequency"),
-aes(x = antibiotic, y = frequency)) +
-  geom_bar(stat = "identity") +
-  facet_wrap(~age)
+# ggplot(data = 
+# samples %>% 
+#   group_by(age) %>%
+#   summarise(TET = sum(TET),
+#             AMP = sum(AMP),
+#             SMX = sum(SMX),
+#             TMP = sum(TMP),
+#             CHL = sum(CHL),
+#             GEN = sum(GEN),
+#             CIP = sum(CIP),
+#             NAL = sum(NAL),
+#             AZI = sum(AZI),
+#             FOT = sum(FOT),
+#             AMI = sum(AMI),
+#             TGC = sum(TGC),
+#             TAZ = sum(TAZ),
+#             COL = sum(COL),
+#             MERO = sum(MERO)) %>%
+#   #janitor::adorn_totals(name = "All age groups") %>% 
+#   #slice(3:n(), 1:2) %>% 
+#   melt(variable.name = "antibiotic", value.name = "frequency"),
+# aes(x = antibiotic, y = frequency)) +
+#   geom_bar(stat = "identity") +
+#   facet_wrap(~age)
 
-sum_samples_calf <-
-samples_calf %>%
-  summarise(TET = (sum(TET)/50),
-            AMP = (sum(AMP)/50),
-            SMX = (sum(SMX)/50),
-            TMP = (sum(TMP)/50),
-            CHL = (sum(CHL)/50),
-            GEN = (sum(GEN)/50),
-            CIP = (sum(CIP)/50),
-            NAL = (sum(NAL)/50),
-            AZI = (sum(AZI)/50),
-            FOT = (sum(FOT)/50),
-            AMI = (sum(AMI)/50),
-            TGC = (sum(TGC)/50),
-            TAZ = (sum(TAZ)/50),
-            COL = (sum(COL)/50),
-            MERO = (sum(MERO)/50)) %>%
-  #janitor::adorn_totals(name = "All age groups") %>% 
-  #slice(3:n(), 1:2) %>% 
-  melt(variable.name = "antibiotic", value.name = "frequency")
-
-sum_samples_cow <-
-samples_cow %>%
-  summarise(TET = (sum(TET)/150),
-            AMP = (sum(AMP)/150),
-            SMX = (sum(SMX)/150),
-            TMP = (sum(TMP)/150),
-            CHL = (sum(CHL)/150),
-            GEN = (sum(GEN)/150),
-            CIP = (sum(CIP)/150),
-            NAL = (sum(NAL)/150),
-            AZI = (sum(AZI)/150),
-            FOT = (sum(FOT)/150),
-            AMI = (sum(AMI)/150),
-            TGC = (sum(TGC)/150),
-            TAZ = (sum(TAZ)/150),
-            COL = (sum(COL)/150),
-            MERO = (sum(MERO)/150)) %>%
-  #janitor::adorn_totals(name = "All age groups") %>% 
-  #slice(3:n(), 1:2) %>% 
-  melt(variable.name = "antibiotic", value.name = "frequency")
-
-agecalf <- list("calf","calf","calf","calf","calf",
-         "calf","calf","calf","calf","calf",
-         "calf","calf","calf","calf","calf")
-
-agecow <- list("cow","cow","cow","cow","cow",
-               "cow","cow","cow","cow","cow",
-               "cow","cow","cow","cow","cow")
+# sum_samples_calf <-
+# samples_calf %>%
+#   summarise(TET = (sum(TET)/50),
+#             AMP = (sum(AMP)/50),
+#             SMX = (sum(SMX)/50),
+#             TMP = (sum(TMP)/50),
+#             CHL = (sum(CHL)/50),
+#             GEN = (sum(GEN)/50),
+#             CIP = (sum(CIP)/50),
+#             NAL = (sum(NAL)/50),
+#             AZI = (sum(AZI)/50),
+#             FOT = (sum(FOT)/50),
+#             AMI = (sum(AMI)/50),
+#             TGC = (sum(TGC)/50),
+#             TAZ = (sum(TAZ)/50),
+#             COL = (sum(COL)/50),
+#             MERO = (sum(MERO)/50)) %>%
+#   #janitor::adorn_totals(name = "All age groups") %>% 
+#   #slice(3:n(), 1:2) %>% 
+#   melt(variable.name = "antibiotic", value.name = "frequency")
+# 
+# sum_samples_cow <-
+# samples_cow %>%
+#   summarise(TET = (sum(TET)/150),
+#             AMP = (sum(AMP)/150),
+#             SMX = (sum(SMX)/150),
+#             TMP = (sum(TMP)/150),
+#             CHL = (sum(CHL)/150),
+#             GEN = (sum(GEN)/150),
+#             CIP = (sum(CIP)/150),
+#             NAL = (sum(NAL)/150),
+#             AZI = (sum(AZI)/150),
+#             FOT = (sum(FOT)/150),
+#             AMI = (sum(AMI)/150),
+#             TGC = (sum(TGC)/150),
+#             TAZ = (sum(TAZ)/150),
+#             COL = (sum(COL)/150),
+#             MERO = (sum(MERO)/150)) %>%
+#   #janitor::adorn_totals(name = "All age groups") %>% 
+#   #slice(3:n(), 1:2) %>% 
+#   melt(variable.name = "antibiotic", value.name = "frequency")
+# 
+# write.csv(sum_samples_calf, "data/processed/AMR/csv_files_for_analysis/sum_samples_calf.csv", row.names=FALSE)
+# write.csv(sum_samples_cow, "data/processed/AMR/csv_files_for_analysis/sum_samples_cow.csv", row.names=FALSE)
 
 
-sum_samples_calf$age <- agecalf
-sum_samples_cow$age <- agecow
 
-sum_samples_calf <- sum_samples_calf[,c("age", "antibiotic", "frequency")]
-sum_samples_cow <- sum_samples_cow[,c("age", "antibiotic", "frequency")]
+
+library(readr)
+sum_samples <- read_csv("data/processed/AMR/csv_files_for_analysis/sum_samples.csv")
+View(sum_samples)
+
+
+
+
+
+
+
+
 
 
 # plot2: Plot with resistance rate by antibiotic class
-plot2 <-
-samples %>% 
-  group_by(age) %>% 
-  summarise(Tetracyclines = sum(TET),
-            Penicillins = sum(AMP),
-            Sulfonamides = sum(SMX),
-            Aminopyrimidines = sum(TMP),
-            Phenicoles = sum(CHL),
-            Aminoglycosides = sum(GEN,AMI),
-            Quinolones = sum(CIP,NAL),
-            Macrolides = sum(AZI),
-            Cephalosporins = sum(FOT,TAZ),
-            Glycylcyclines = sum(TGC),
-            Polypeptides = sum(COL),
-            Carbapenemns = sum(MERO)) %>%
-  #janitor::adorn_totals(name = "All age groups") %>% 
-  slice(3:n(), 1:2) %>% 
-  melt() %>%
-  ggplot(aes(x = variable, y = (value / length(samples$Nr)), 
-             fill = reorder(age, -value), 
-             label = ifelse(variable == "Penicillins" | 
-                            variable == "Tetracyclines" |
-                            variable == "Sulfonamides" |
-                            variable == "Aminopyrimidines" |
-                            variable == "Phenicoles" |
-                            variable == "Aminoglycosides" |
-                            variable == "Quinolones" |
-                            variable == "Macrolides" |
-                            variable == "Cephalosporins",
-                            ((value / length(samples$Nr)*100)),""))) +
-  geom_bar(position="dodge", stat="identity", width = 0.8) +
-  geom_text(aes(), position = position_dodge(0.8), vjust = -0.3,check_overlap = TRUE)+
-  scale_fill_manual(values = c(hcl.colors(5, "Cividis")), labels = c('Calf Samples (n=50)', 'Cow Samples (n=150)')) +
-  theme_bw() +
-  theme(plot.title = element_text(size = 30, hjust = 0.5, vjust = 0.5 ),
-        legend.title = element_blank(), axis.title.y = element_text(size = 20,margin =margin(r=20)),
-        axis.text = element_text(color = "black"),
-        axis.text.x = element_text(angle = 45, hjust = 1, family = "sans", size = 10),
-        panel.grid.major = element_line(linewidth = 0.5, color = "lightgrey", linetype = "dashed"),
-        axis.ticks.x = element_line(linewidth = 28)) +
-  xlab("") +
-  ylab("Resistance Rate") + 
-  scale_y_continuous(labels = scales::percent, expand = c(0.01,0), 
-                     limits = c(0,0.1)) +
-  scale_x_discrete(expand = c(0,0.5)) +
-  ggtitle("Resistance Rate against Antimicrobial Classes")
-
-print(plot2)
+# plot2 <-
+# samples %>% 
+#   group_by(age) %>% 
+#   summarise(Tetracyclines = sum(TET),
+#             Penicillins = sum(AMP),
+#             Sulfonamides = sum(SMX),
+#             Aminopyrimidines = sum(TMP),
+#             Phenicoles = sum(CHL),
+#             Aminoglycosides = sum(GEN,AMI),
+#             Quinolones = sum(CIP,NAL),
+#             Macrolides = sum(AZI),
+#             Cephalosporins = sum(FOT,TAZ),
+#             Glycylcyclines = sum(TGC),
+#             Polypeptides = sum(COL),
+#             Carbapenemns = sum(MERO)) %>%
+#   #janitor::adorn_totals(name = "All age groups") %>% 
+#   slice(3:n(), 1:2) %>% 
+#   melt() %>%
+#   ggplot(aes(x = variable, y = (value / length(samples$Nr)), 
+#              fill = reorder(age, -value), 
+#              label = ifelse(variable == "Penicillins" | 
+#                             variable == "Tetracyclines" |
+#                             variable == "Sulfonamides" |
+#                             variable == "Aminopyrimidines" |
+#                             variable == "Phenicoles" |
+#                             variable == "Aminoglycosides" |
+#                             variable == "Quinolones" |
+#                             variable == "Macrolides" |
+#                             variable == "Cephalosporins",
+#                             ((value / length(samples$Nr)*100)),""))) +
+#   geom_bar(position="dodge", stat="identity", width = 0.8) +
+#   geom_text(aes(), position = position_dodge(0.8), vjust = -0.3,check_overlap = TRUE)+
+#   scale_fill_manual(values = c(hcl.colors(5, "Cividis")), labels = c('Calf Samples (n=50)', 'Cow Samples (n=150)')) +
+#   theme_bw() +
+#   theme(plot.title = element_text(size = 30, hjust = 0.5, vjust = 0.5 ),
+#         legend.title = element_blank(), axis.title.y = element_text(size = 20,margin =margin(r=20)),
+#         axis.text = element_text(color = "black"),
+#         axis.text.x = element_text(angle = 45, hjust = 1, family = "sans", size = 10),
+#         panel.grid.major = element_line(linewidth = 0.5, color = "lightgrey", linetype = "dashed"),
+#         axis.ticks.x = element_line(linewidth = 28)) +
+#   xlab("") +
+#   ylab("Resistance Rate") + 
+#   scale_y_continuous(labels = scales::percent, expand = c(0.01,0), 
+#                      limits = c(0,0.1)) +
+#   scale_x_discrete(expand = c(0,0.5)) +
+#   ggtitle("Resistance Rate against Antimicrobial Classes")
+# 
+# print(plot2)
 
 
 
 #plot3: Plot with number of antibiotic classes where resistances occured
-plot3 <-
-samples %>%
-  group_by(age) %>%
-  summarise('Pan-susceptible' = sum(class_res == 0),
-            'Resistance against 1-2 Classes ' = sum(class_res == 1 | class_res == 2),
-            'Multiclass Resistance (≥ 3 Classes)' = sum(class_res >= 3),) %>%
-  slice(3:n(), 1:2) %>% 
-  melt() %>%
-  ggplot(aes(x = variable, y = (value / length(samples$Nr)), 
-             fill = reorder(age, -value), 
-             label = paste("n=", value))) + 
-             #label = paste(((value / 200)*100),"%"))) +
-  geom_bar(position="dodge", stat="identity", width = 0.8) +
-  geom_text(aes(), position = position_dodge(0.8), vjust = -0.3,check_overlap = TRUE)+
-  scale_fill_manual(values = c(hcl.colors(5, "Cividis")), labels = c('Calf Samples (n=50)', 'Cow Samples (n=150)')) +
-  theme_bw() +
-  theme(plot.title = element_text(size = 30, hjust = 0.5, vjust = 0.5 ),
-        legend.title = element_blank(), axis.title.y = element_text(size = 20,margin =margin(r=20)),
-        legend.text = element_text(size = 15),
-        axis.text = element_text(color = "black"),
-        axis.text.x = element_text(#angle = 45, hjust = 1, 
-                                   family = "sans", size = 15),
-        panel.grid.major = element_line(linewidth = 0.5, color = "lightgrey", linetype = "dashed")) +
-  xlab("") +
-  ylab("% of E.coli isolates") + 
-  scale_y_continuous(labels = scales::percent, expand = c(0.01,0), 
-                     limits = c(0,0.75), breaks = c(0.05,0.1,0.2,0.5,0.6,0.7,0.8),) +
-  scale_x_discrete(expand = c(0.21,0)) +
-  ggtitle("Occurence of (Multi)Class Resistances")
-
-print(plot3)
+# plot3 <-
+# samples %>%
+#   group_by(age) %>%
+#   summarise('Pan-susceptible' = sum(class_res == 0),
+#             'Resistance against 1-2 Classes ' = sum(class_res == 1 | class_res == 2),
+#             'Multiclass Resistance (≥ 3 Classes)' = sum(class_res >= 3),) %>%
+#   slice(3:n(), 1:2) %>% 
+#   melt() %>%
+#   ggplot(aes(x = variable, y = (value / length(samples$Nr)), 
+#              fill = reorder(age, -value), 
+#              label = paste("n=", value))) + 
+#              #label = paste(((value / 200)*100),"%"))) +
+#   geom_bar(position="dodge", stat="identity", width = 0.8) +
+#   geom_text(aes(), position = position_dodge(0.8), vjust = -0.3,check_overlap = TRUE)+
+#   scale_fill_manual(values = c(hcl.colors(5, "Cividis")), labels = c('Calf Samples (n=50)', 'Cow Samples (n=150)')) +
+#   theme_bw() +
+#   theme(plot.title = element_text(size = 30, hjust = 0.5, vjust = 0.5 ),
+#         legend.title = element_blank(), axis.title.y = element_text(size = 20,margin =margin(r=20)),
+#         legend.text = element_text(size = 15),
+#         axis.text = element_text(color = "black"),
+#         axis.text.x = element_text(#angle = 45, hjust = 1, 
+#                                    family = "sans", size = 15),
+#         panel.grid.major = element_line(linewidth = 0.5, color = "lightgrey", linetype = "dashed")) +
+#   xlab("") +
+#   ylab("% of E.coli isolates") + 
+#   scale_y_continuous(labels = scales::percent, expand = c(0.01,0), 
+#                      limits = c(0,0.75), breaks = c(0.05,0.1,0.2,0.5,0.6,0.7,0.8),) +
+#   scale_x_discrete(expand = c(0.21,0)) +
+#   ggtitle("Occurence of (Multi)Class Resistances")
+# 
+# print(plot3)
 
 
 #plot4: Plot with number of class resistances in calfs by AMU
