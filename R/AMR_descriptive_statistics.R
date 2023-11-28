@@ -51,55 +51,55 @@ summary(samples_cow)
 
 # plot1: Plot with all antibiotics ordered by decreasing number of resistant isolates  
 #CAVE: PLOT DOES NOT CORRECTLY REFLECT PROPORTIONS!
-#plot1 <-
- # samples %>% 
- # group_by(age) %>% 
-  #summarise(TET = sum(TET),
-#             AMP = sum(AMP),
-#             SMX = sum(SMX),
-#             TMP = sum(TMP),
-#             CHL = sum(CHL),
-#             GEN = sum(GEN),
-#             CIP = sum(CIP),
-#             NAL = sum(NAL),
-#             AZI = sum(AZI),
-#             FOT = sum(FOT),
-#             AMI = sum(AMI),
-#             TGC = sum(TGC),
-#             TAZ = sum(TAZ),
-#             COL = sum(COL),
-#             MERO = sum(MERO)) %>%
-#   #janitor::adorn_totals(name = "All age groups") %>% 
-#   slice(3:n(), 1:2) %>% 
-#   melt() %>%
-#   ggplot(aes(x = variable, y = (value / length(samples$Nr)), 
-#              fill = reorder(age, -value), 
-#              label = ifelse(variable == "TET" | 
-#                               variable == "AMP" |
-#                               variable == "SMX" |
-#                               variable == "TMP" |
-#                               variable == "CHL" |
-#                               variable == "GEN" |
-#                               variable == "CIP" |
-#                               variable == "NAL" |
-#                               variable == "AZI" |
-#                               variable == "FOT" ,(value / length(samples$Nr)*100),""))) +
-#   geom_bar(position="dodge", stat="identity", width = 0.8) +
-#   geom_text(aes(), position = position_dodge(0.8), vjust = -0.3,check_overlap = TRUE)+
-#   scale_fill_manual(values = c(hcl.colors(5, "Cividis")), labels = c('Calf Samples (n=50)', 'Cow Samples (n=150)')) +
-#   theme_bw() +
-#   theme(plot.title = element_text(size = 30, hjust = 0.5, vjust = 0.5 ),
-#         legend.title = element_blank(), axis.title.y = element_text(size = 20,margin =margin(r=20)),
-#         axis.text = element_text(color = "black"),
-#         panel.grid.major = element_line(linewidth = 0.5, color = "lightgrey", linetype = "dashed"),
-#         axis.ticks.x = element_line(linewidth = 22)) +
-#   xlab("") +
-#   ylab("Resistance Rate") + 
-#   scale_y_continuous(labels = scales::percent, expand = c(0.01,0), 
-#                      limits = c(0,0.1)) +
-#   scale_x_discrete(expand = c(0,0.5)) +
-#   ggtitle("Resistance Rate of Antibiotics tested")
-# 
+plot1 <-
+samples %>%
+group_by(age) %>%
+summarise(TET = sum(TET),
+            AMP = sum(AMP),
+            SMX = sum(SMX),
+            TMP = sum(TMP),
+            CHL = sum(CHL),
+            GEN = sum(GEN),
+            CIP = sum(CIP),
+            NAL = sum(NAL),
+            AZI = sum(AZI),
+            FOT = sum(FOT),
+            AMI = sum(AMI),
+            TGC = sum(TGC),
+            TAZ = sum(TAZ),
+            COL = sum(COL),
+            MERO = sum(MERO)) %>%
+  #janitor::adorn_totals(name = "All age groups") %>%
+  slice(3:n(), 1:2) %>%
+  melt() %>%
+  ggplot(aes(x = variable, y = (value / length(samples$Nr)),
+             fill = reorder(age, -value),
+             label = ifelse(variable == "TET" |
+                              variable == "AMP" |
+                              variable == "SMX" |
+                              variable == "TMP" |
+                              variable == "CHL" |
+                              variable == "GEN" |
+                              variable == "CIP" |
+                              variable == "NAL" |
+                              variable == "AZI" |
+                              variable == "FOT" ,(value / length(samples$Nr)*100),""))) +
+  geom_bar(position="dodge", stat="identity", width = 0.8) +
+  geom_text(aes(), position = position_dodge(0.8), vjust = -0.3,check_overlap = TRUE)+
+  scale_fill_manual(values = c(hcl.colors(4, "Batlow")), labels = c('Calf Samples (n=50)', 'Cow Samples (n=150)')) +
+  theme_bw() +
+  theme(plot.title = element_text(size = 30, hjust = 0.5, vjust = 0.5 ),
+        legend.title = element_blank(), axis.title.y = element_text(size = 20,margin =margin(r=20)),
+        axis.text = element_text(color = "black"),
+        panel.grid.major = element_line(linewidth = 0.5, color = "lightgrey", linetype = "dashed"),
+        axis.ticks.x = element_line(linewidth = 22)) +
+  xlab("") +
+  ylab("Resistance Rate") +
+  scale_y_continuous(labels = scales::percent, expand = c(0.01,0),
+                     limits = c(0,0.1)) +
+  scale_x_discrete(expand = c(0,0.5)) +
+  ggtitle("Resistance Rate of Antibiotics tested")
+
 # print(plot1)
 
 
@@ -282,15 +282,15 @@ plot4 <-
 samples_calf %>%
   group_by(AMU) %>%
   summarise('Pan-susceptible' = sum(class_res == 0),
-            'Resistance against 1-2 Classes ' = sum(class_res == 1 | class_res == 2),
-            'Multiclass Resistance (≥ 3 Classes)' = sum(class_res >= 3)) %>%
+            'Resistant against 1-2 classes ' = sum(class_res == 1 | class_res == 2),
+            'Multiclass resistant (≥ 3 classes)' = sum(class_res >= 3)) %>%
   melt() %>%
-ggplot(aes(x = variable, y = (value / 50),
+ggplot(aes(x = variable, y = (value/50),
             fill = reorder(AMU, -value),
             label = paste(((value / 50)*100),"%"))) +
   geom_bar(position="dodge", stat="identity", width = 0.8)+
   geom_text(aes(), position = position_dodge(0.8), vjust = -0.3, check_overlap = TRUE)+
-  scale_fill_manual(values =c(hcl.colors(5, "Cividis")), labels = c('low AMU farm (n=28)', 'high AMU farm (n=22)'))+
+  scale_fill_manual(values =c(hcl.colors(4, "Batlow")), labels = c('low AMU farm', 'high AMU farm'))+
   theme_bw() +
   theme(plot.title = element_text(size = 30, hjust = 0.5, vjust = 0.5 ),
       legend.title = element_blank(), axis.title.y = element_text(size = 20,margin =margin(r=20)),
@@ -300,7 +300,7 @@ ggplot(aes(x = variable, y = (value / 50),
         family = "sans", size = 15),
       panel.grid.major = element_line(linewidth = 0.5, color = "lightgrey", linetype = "dashed")) +
   xlab("")+
-  ylab("% of E.coli isolates") +
+  ylab("% of E.coli samples") +
   scale_y_continuous(labels = scales::percent, expand = c(0.01,0), limits = c(0,0.35),
                      breaks = c(0.1,0.2,0.3,0.35)) +
   scale_x_discrete(expand = c(0,0.43)) +
@@ -313,15 +313,15 @@ plot5 <-
 samples_cow %>%
   group_by(AMU) %>%
   summarise('Pan-susceptible' = sum(class_res == 0),
-            'Resistance against 1-2 Classes ' = sum(class_res == 1 | class_res == 2),
-            'Multiclass Resistance (≥ 3 Classes)' = sum(class_res >= 3)) %>%
+            'Resistant against 1-2 classes ' = sum(class_res == 1 | class_res == 2),
+            'Multiclass resistant (≥ 3 classes)' = sum(class_res >= 3)) %>%
   melt() %>%
-ggplot(aes(x = variable, y = (value / 150),
+ggplot(aes(x = variable, y = (value/150),
            fill = reorder(AMU, -value),
            label = scales::percent((value / 150), accuracy=0.1))) +
   geom_bar(position="dodge", stat="identity", width = 0.8)+
   geom_text(aes(), position = position_dodge(0.8), vjust = -0.3, check_overlap = TRUE)+
-  scale_fill_manual(values =c(hcl.colors(5, "Cividis")), labels = c('low AMU farm (n=28)', 'high AMU farm (n=22)'))+
+  scale_fill_manual(values =c(hcl.colors(4, "Batlow")), labels = c('low AMU farm', 'high AMU farm'))+
   theme_bw() +
   theme(plot.title = element_text(size = 30, hjust = 0.5, vjust = 0.5 ),
         legend.title = element_blank(), axis.title.y = element_text(size = 20,margin =margin(r=20)),
@@ -331,7 +331,7 @@ ggplot(aes(x = variable, y = (value / 150),
           family = "sans", size = 15),
         panel.grid.major = element_line(linewidth = 0.5, color = "lightgrey", linetype = "dashed"))+
   xlab("")+
-  ylab("% of E.coli isolates") +
+  ylab("% of E.coli samples") +
   scale_y_continuous(labels = scales::percent, expand = c(0.01,0), limits =c(0,0.6),
                                                                breaks = c(0.05,0.1,0.2,0.3,0.4,0.5,0.6))+
   scale_x_discrete(expand = c(0,0.43)) +
@@ -362,7 +362,8 @@ tbl_summary((samples %>%
                           stat_1 = '**Pansusceptible**  \n N=174',
                           stat_2 = '**Resistant**  \n N=26') %>%
             modify_footnote(stat_2 ~ "Resistant = Sample with at least one resistant isolate",
-                            stat_0 ~ NA)
+                            stat_0 ~ NA) %>%
+            modify_column_hide(stat_1)
             
            
             
@@ -377,22 +378,24 @@ tbl_summary((samples %>%
             statistic = multiclass_res  ~ "{n}/{N} ({p}%)") %>%
                     modify_header(label = "",
                     stat_1 = '**Resistances against fewer than 3 Classes**,  \n N=183',
-                    stat_2 = '**Multiclass Resistance<sup>3</sup>**  \n N=17 (of 200)') %>%
+                    stat_2 = '**Multiclass Resistant<sup>2</sup>**  \n N=17 (of all 200)') %>%
             modify_footnote(stat_2 ~ "Multiclass Resistance = resistant against ≥3 classes") %>%
             modify_column_hide(stat_1)
+  
             
             
 #table_1: Summary table of fecal samples
 table_1 <-
 tbl_merge(tbls =list(table_positive, table_multiclass_res), 
-          tab_spanner = c('**Number of pansusceptible  \n vs. positive samples**',
-                          "**Number of multiclass resistant  \n samples (of all 200)**")) #%>%
+          tab_spanner = c('**Number (%) of  \n resistant samples**',
+                          "**Number of multiclass  \n resistant samples**")) #%>%
           
           #modify_caption('**Summary-Table of Fecal Samples**') 
           
           
 print(table_1)
   
+
 
 
 #Importing sample level dataset with antibiotics coded as numerics
