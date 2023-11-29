@@ -37,7 +37,7 @@ avoid_dist%>%
   scale_x_discrete(expand = c(0,0.45)) +
   scale_y_continuous(labels = function(x) paste(x,"%"), limits = c(0,75), 
                      expand = c(0.01,0), breaks = c(5,10,20,60,70)) +
-  ggtitle("Avoidance distance observed on farms")
+  ggtitle("Avoidance distance observed on 50 farms (≈ 1300 cows)")
 
 
 
@@ -59,25 +59,29 @@ avoid_dist%>%
              #fill = reorder(AMU, -value), 
              fill = AMU, -value,
              label = paste((round(value, digits = 2)),"%"))) +
-  geom_bar(position="dodge", stat="identity", width = 0.8) +
-  geom_text(aes(), position = position_dodge(0.8), vjust = -0.3,check_overlap = TRUE)+
+  geom_bar(position="dodge", stat="identity", width = 0.9) +
+  geom_text(aes(), position = position_dodge(0.9), vjust = -0.3,check_overlap = TRUE,
+  size = 5) +
   scale_fill_manual(values = c(hcl.colors(4, "Batlow")), labels = c('zero (n=6 farms)', 'low (n=22 farms)', 'high (n=22 farms)')) +
   theme_bw() +
   theme(plot.title = element_text(size = 30, hjust = 0.5, vjust = 0.5 ),
-        legend.title = element_text(size = 20), #face = "bold"),
-        legend.text = element_text(size = 15),
-        axis.title.y = element_text(size = 20,margin =margin(r=20)),
-        axis.title.x = element_text(size = 20, margin = margin(t=20)),
-        axis.text = element_text(color = "black", size = 15),
+        legend.position = c(0.75,0.65),
+        legend.title = element_text(size = 23, face = "bold"),
+        legend.text = element_text(size = 20),
+        legend.box.background = element_rect(colour = "black"),
+        legend.background = element_blank(),
+        axis.title.y = element_text(size = 23,margin =margin(r=20)),
+        axis.title.x = element_text(size = 23, margin = margin(t=20)),
+        axis.text = element_text(color = "black", size = 17),
         panel.grid.major = element_line(linewidth = 0.5, color = "lightgrey", linetype = "dashed"),
-        axis.ticks.x = element_line(linewidth = 65)) +
+        axis.ticks.x = element_line(linewidth = 90)) +
   labs(fill = 'AMU Group') +
   xlab("Avoidance Distance [cm]") +
   ylab("% of Animals") + 
-  scale_x_discrete(expand = c(0,0.45)) +
+  scale_x_discrete(expand = c(0.01,0.45)) +
   scale_y_continuous(labels = function(x) paste(x,"%"), limits = c(0,75), 
-                     expand = c(0.01,0), breaks = c(5,10,20,60,70)) +
-  ggtitle("Avoidance distance observed on farms")
+                     expand = c(0.01,0.1), breaks = c(5,10,20,60,70)) +
+  ggtitle("Avoidance distance observed on farms by AMU")
 
 
 

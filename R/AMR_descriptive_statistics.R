@@ -182,9 +182,48 @@ library(readr)
 sum_samples <- read_csv("data/processed/AMR/csv_files_for_analysis/sum_samples.csv")
 View(sum_samples)
 
-
-
-
+sum_samples%>%
+  group_by(age) %>%
+  melt() %>%
+ggplot(aes(x = factor(antibiotic, level= c("TET", "AMP", "SMX", "TMP", "CHL",
+                                           "GEN", "CIP", "NAL", "AZI", "FOT",
+                                           "AMI", "TGC", "TAZ", "COL", "MERO")),
+           y = value, 
+           fill = reorder(age, -value), 
+           label = 
+             ifelse(antibiotic == "TET" |
+                    antibiotic == "AMP" |
+                      antibiotic == "SMX" |
+                      antibiotic == "TMP" |
+                      antibiotic == "CHL" |
+                      antibiotic == "GEN" |
+                      antibiotic == "CIP" |
+                      antibiotic == "NAL" |
+                      antibiotic == "AZI" |
+                      antibiotic == "FOT" ,((round(value*100,))),""))) +  
+  geom_bar(position="dodge", stat="identity", width = 0.8) +
+  geom_text(aes(), position = position_dodge(0.8), vjust = -0.3,check_overlap = TRUE,
+            size = 5) +
+  scale_fill_manual(values = c("#211158","#c19a1b"), labels = c('Calf samples (n=50)', 'Cow samples (n= 150)')) +
+  theme_bw() +
+  theme(plot.title = element_text(size = 30, hjust = 0.5, vjust = 0.5 ),
+        legend.position = c(0.75,0.65),
+        legend.title = element_blank(),
+        legend.text = element_text(size = 20),
+        legend.box.background = element_rect(colour = "black"),
+        legend.background = element_blank(),
+        legend.key.size = unit(1.5, "cm"),
+        axis.title.y = element_text(size = 23,margin =margin(r=20)),
+        axis.title.x = element_text(size = 23, margin = margin(t=20)),
+        axis.text = element_text(color = "black", size = 17),
+        panel.grid.major = element_line(linewidth = 0.5, color = "lightgrey", linetype = "dashed"),
+        axis.ticks.x = element_line(linewidth = 25)) +
+  xlab("") +
+  ylab("% of resistant samples") + 
+  scale_x_discrete(expand = c(0.04,0)) +
+  scale_y_continuous(labels = scales::percent, limits = c(0,0.4), 
+                     expand = c(0.01,0), breaks = c(0.05,0.1,0.2,0.3,0.4)) +
+  ggtitle("% of resistant samples in calves vs. cows by antibiotic tested")
 
 
 
@@ -192,6 +231,7 @@ View(sum_samples)
 
 
 # plot2: Plot with resistance rate by antibiotic class
+#CAVE: PLOT DOES NOT CORRECTLY REFLECT PROPORTIONS!
 # plot2 <-
 # samples %>% 
 #   group_by(age) %>% 
@@ -244,6 +284,7 @@ View(sum_samples)
 
 
 #plot3: Plot with number of antibiotic classes where resistances occured
+#CAVE: PLOT DOES NOT CORRECTLY REFLECT PROPORTIONS!
 # plot3 <-
 # samples %>%
 #   group_by(age) %>%
@@ -289,22 +330,22 @@ ggplot(aes(x = variable, y = (value/50),
             fill = reorder(AMU, -value),
             label = paste(((value / 50)*100),"%"))) +
   geom_bar(position="dodge", stat="identity", width = 0.8)+
-  geom_text(aes(), position = position_dodge(0.8), vjust = -0.3, check_overlap = TRUE)+
-  scale_fill_manual(values =c(hcl.colors(4, "Batlow")), labels = c('low AMU farm', 'high AMU farm'))+
+  geom_text(aes(), position = position_dodge(0.8), vjust = -0.3, check_overlap = TRUE, size = 7)+
+  scale_fill_manual(values = c("#211158","#c19a1b"), labels = c('low AMU farm', 'high AMU farm'))+
   theme_bw() +
   theme(plot.title = element_text(size = 30, hjust = 0.5, vjust = 0.5 ),
-      legend.title = element_blank(), axis.title.y = element_text(size = 20,margin =margin(r=20)),
-      legend.text = element_text(size = 15),
-      axis.text = element_text(color = "black"),
-      axis.text.x = element_text(#angle = 45, hjust = 1, 
-        family = "sans", size = 15),
+      legend.title = element_blank(), 
+      legend.key.size = unit(1.5, "cm"),
+      axis.title.y = element_text(size = 23,margin =margin(r=20)),
+      legend.text = element_text(size = 20),
+      axis.text = element_text(color = "black", size = 20),
       panel.grid.major = element_line(linewidth = 0.5, color = "lightgrey", linetype = "dashed")) +
   xlab("")+
   ylab("% of E.coli samples") +
   scale_y_continuous(labels = scales::percent, expand = c(0.01,0), limits = c(0,0.35),
                      breaks = c(0.1,0.2,0.3,0.35)) +
   scale_x_discrete(expand = c(0,0.43)) +
-  ggtitle("(Multi)Class Resistance in Calves in low vs. high AMU Farms")
+  ggtitle("(Multi)Class resistance in calves in low vs. high AMU farms")
 
 print(plot4)
   
@@ -320,22 +361,22 @@ ggplot(aes(x = variable, y = (value/150),
            fill = reorder(AMU, -value),
            label = scales::percent((value / 150), accuracy=0.1))) +
   geom_bar(position="dodge", stat="identity", width = 0.8)+
-  geom_text(aes(), position = position_dodge(0.8), vjust = -0.3, check_overlap = TRUE)+
-  scale_fill_manual(values =c(hcl.colors(4, "Batlow")), labels = c('low AMU farm', 'high AMU farm'))+
+  geom_text(aes(), position = position_dodge(0.8), vjust = -0.3, check_overlap = TRUE, size = 7)+
+  scale_fill_manual(values = c("#211158","#c19a1b"), labels = c('low AMU farm', 'high AMU farm'))+
   theme_bw() +
   theme(plot.title = element_text(size = 30, hjust = 0.5, vjust = 0.5 ),
-        legend.title = element_blank(), axis.title.y = element_text(size = 20,margin =margin(r=20)),
-        legend.text = element_text(size = 15),
-        axis.text = element_text(color = "black"),
-        axis.text.x = element_text(#angle = 45, hjust = 1, 
-          family = "sans", size = 15),
+        legend.title = element_blank(), 
+        legend.key.size = unit(1.5, "cm"),
+        axis.title.y = element_text(size = 23,margin =margin(r=20)),
+        legend.text = element_text(size = 20),
+        axis.text = element_text(color = "black", size = 20),
         panel.grid.major = element_line(linewidth = 0.5, color = "lightgrey", linetype = "dashed"))+
   xlab("")+
   ylab("% of E.coli samples") +
   scale_y_continuous(labels = scales::percent, expand = c(0.01,0), limits =c(0,0.6),
                                                                breaks = c(0.05,0.1,0.2,0.3,0.4,0.5,0.6))+
   scale_x_discrete(expand = c(0,0.43)) +
-  ggtitle("(Multi)Class Resistance in Cows in low vs. high AMU Farms")
+  ggtitle("(Multi)Class resistance in cows in low vs. high AMU farms")
 
 print(plot5)
          
