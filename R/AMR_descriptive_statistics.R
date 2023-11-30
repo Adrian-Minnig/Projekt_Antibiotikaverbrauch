@@ -351,30 +351,43 @@ print(plot4)
   
 #plot5: Plot with number of class resistances in cows by AMU
 plot5 <-
-samples_cow %>%
+  samples_cow_new <-
+  samples_cow %>%
   group_by(AMU) %>%
   summarise('Pan-susceptible' = sum(class_res == 0),
             'Resistant against 1-2 classes ' = sum(class_res == 1 | class_res == 2),
             'Multiclass resistant (≥ 3 classes)' = sum(class_res >= 3)) %>%
-  melt() %>%
-ggplot(aes(x = variable, y = (value/150),
+  melt()
+
+  samples_cow_new[samples_cow_new == 63] <- (63/66)
+  samples_cow_new[samples_cow_new == 81] <- (81/84)
+  samples_cow_new[samples_cow_new == 3] <- (3/66)
+  samples_cow_new[samples_cow_new == 1] <- (1/84)
+  samples_cow_new[samples_cow_new == 0] <- (0/66)
+  samples_cow_new[samples_cow_new == 2] <- (2/84)
+
+samples_cow_new %>%
+ggplot(aes(x = variable, y = (value),
            fill = reorder(AMU, -value),
-           label = scales::percent((value / 150), accuracy=0.1))) +
+           label = scales::percent((value), accuracy=0.1))) +
   geom_bar(position="dodge", stat="identity", width = 0.8)+
-  geom_text(aes(), position = position_dodge(0.8), vjust = -0.3, check_overlap = TRUE, size = 7)+
-  scale_fill_manual(values = c("#211158","#c19a1b"), labels = c('low AMU farm', 'high AMU farm'))+
+  geom_text(aes(), position = position_dodge(0.8), vjust = -0.3, check_overlap = TRUE, size = 9)+
+  scale_fill_manual(values = c("#211158","#c19a1b"), labels = c('zero & low AMU farms (n=28)', 'high AMU farms (n=22)'))+
   theme_bw() +
   theme(plot.title = element_text(size = 30, hjust = 0.5, vjust = 0.5 ),
         legend.title = element_blank(), 
-        legend.key.size = unit(1.5, "cm"),
-        axis.title.y = element_text(size = 23,margin =margin(r=20)),
-        legend.text = element_text(size = 20),
-        axis.text = element_text(color = "black", size = 20),
+        legend.key.size = unit(2, "cm"),
+        legend.position = c(0.75,0.65),
+        legend.box.background = element_rect(colour = "black"),
+        legend.background = element_blank(),
+        axis.title.y = element_text(size = 25,margin =margin(r=20)),
+        legend.text = element_text(size = 23),
+        axis.text = element_text(color = "black", size = 23),
         panel.grid.major = element_line(linewidth = 0.5, color = "lightgrey", linetype = "dashed"))+
   xlab("")+
   ylab("% of E.coli samples") +
-  scale_y_continuous(labels = scales::percent, expand = c(0.01,0), limits =c(0,0.6),
-                                                               breaks = c(0.05,0.1,0.2,0.3,0.4,0.5,0.6))+
+  scale_y_continuous(labels = scales::percent, expand = c(0.01,0.01), limits =c(0,1),
+                                                               breaks = c(0.05,0.1,0.9,1))+
   scale_x_discrete(expand = c(0,0.43)) +
   ggtitle("(Multi)Class resistance in cows in low vs. high AMU farms")
 
