@@ -368,7 +368,7 @@ plot5 <-
 
 samples_cow_new %>%
 ggplot(aes(x = variable, y = (value),
-           fill = reorder(AMU, -value),
+           fill = reorder(AMU, value),
            label = scales::percent((value), accuracy=0.1))) +
   geom_bar(position="dodge", stat="identity", width = 0.8)+
   geom_text(aes(), position = position_dodge(0.8), vjust = -0.3, check_overlap = TRUE, size = 9)+
