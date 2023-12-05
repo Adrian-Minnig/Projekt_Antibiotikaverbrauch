@@ -200,7 +200,7 @@ ggplot(aes(x = factor(antibiotic, level= c("TET", "AMP", "SMX", "TMP", "CHL",
                       antibiotic == "CIP" |
                       antibiotic == "NAL" |
                       antibiotic == "AZI" |
-                      antibiotic == "FOT" ,((round(value*100,))),""))) +  
+                      antibiotic == "FOT" ,((round(value*100, digits = 1))),""))) +  
   geom_bar(position="dodge", stat="identity", width = 0.8) +
   geom_text(aes(), position = position_dodge(0.8), vjust = -0.3,check_overlap = TRUE,
             size = 5) +
@@ -219,11 +219,11 @@ ggplot(aes(x = factor(antibiotic, level= c("TET", "AMP", "SMX", "TMP", "CHL",
         panel.grid.major = element_line(linewidth = 0.5, color = "lightgrey", linetype = "dashed"),
         axis.ticks.x = element_line(linewidth = 25)) +
   xlab("") +
-  ylab("% of resistant samples") + 
+  ylab("% of resistant isolates") + 
   scale_x_discrete(expand = c(0.04,0)) +
   scale_y_continuous(labels = scales::percent, limits = c(0,0.4), 
                      expand = c(0.01,0), breaks = c(0.05,0.1,0.2,0.3,0.4)) +
-  ggtitle("% of resistant samples in calves vs. cows by antibiotic tested")
+  ggtitle("% of resistant isolates in calves vs. cows by antibiotic tested")
 
 
 
@@ -385,7 +385,7 @@ ggplot(aes(x = variable, y = (value),
         axis.text = element_text(color = "black", size = 23),
         panel.grid.major = element_line(linewidth = 0.5, color = "lightgrey", linetype = "dashed"))+
   xlab("")+
-  ylab("% of E.coli samples") +
+  ylab("% of E.coli isolates") +
   scale_y_continuous(labels = scales::percent, expand = c(0.01,0.01), limits =c(0,1),
                                                                breaks = c(0.05,0.1,0.9,1))+
   scale_x_discrete(expand = c(0,0.43)) +
